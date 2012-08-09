@@ -17,11 +17,17 @@ PUSH H       ; Push dividend on the stack
 
 CALL DIVISION
 
-; Get the result into Register HL
+; Get the quotient into Register HL
 POP H
 
-; Store the result into memory
+; Store the quotient into memory
 SHLD 9054H
+
+; Get the remainder into Register HL
+POP H
+
+; Store the remainder into memory
+SHLD 9056H
 
 ; Restore last state
 POP H
@@ -33,7 +39,7 @@ RST 05        ; Restore to monitor
 
 ; 16-bit division. Number on the top of the stack is the dividend, followed by 
 ; divisor.
-; Returns the quotient on the stack.
+; Returns the remainder and quotient on the stack.
 DIVISION: NOP
 
 ; Get the return address and store in memory
@@ -56,6 +62,7 @@ JNC loop    ; If not carry (which occurs if the subtraction yielded a negative n
 
 DCX B       ; Since we over-counted B, decrement B
 DAD D       ; Add DE to HL (makes it positive)
+PUSH H		; Push remainder on stack
 PUSH B      ; Push quotient on stack
 
 LHLD 8300H  ; Read return address from memory
