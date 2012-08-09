@@ -1,17 +1,3 @@
-;LHLD C050
-;XCHG 
-;LHLD C052 
-;MOV A,E 
-;SUB L 
-;MOV L,A 
-;MOV A,D 
-;SBB H 
-;MOV H,A 
-;SHLD C054 
-;HLT 
-
-; Not tested/verified yet.
-
   LHLD C050 ; Load from C050
   XCHG      ; DE <- HL (rather, ED <- LH)
   LHLD C052 ; Load from C052  

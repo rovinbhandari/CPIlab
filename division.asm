@@ -1,6 +1,6 @@
-  LHLD C050   ; Load from memory location C050 to HL pair.
-  XCHG        ; Transfer from HL pair to DE pair
-  LHLD C052   ; Load from memory location C052 to HL pair.
+  LHLD C050   ; Load divisor from memory location C050 to HL pair.
+  XCHG        ; Transfer divisor from HL pair to DE pair
+  LHLD C052   ; Load dividend from memory location C052 to HL pair.
   LXI B,0000H ; Set BC to 0
 loop:
   MOV A,L     ; A <- L [copy the lower 8 bits ]
