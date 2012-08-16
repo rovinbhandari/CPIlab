@@ -29,12 +29,10 @@ HLT
 ; 16-bit GCD.
 ; number on the top of the stack (smaller number) goes to DE pair; the lower number (bigger number) goes to BC pair.
 ; returns the answer on the stack.
-GCD: NOP
-
+GCD: MVI H,00H
 ; Get the return address and store in memory
 POP H
 SHLD C0A0H
-
 POP H
 XCHG
 POP H
@@ -42,47 +40,43 @@ MOV C,L
 MOV B,H
 MVI H,00H
 MVI L,00H
-LOOP: MOV A, B
-ORA C
-JZ DECREMENT
+GCDLOOP: MOV A,D
+ORA E
 JZ STORERESULT
-DECREMENT: DAD D
-DCX B
-JMP LOOP
-; Store current state
 PUSH PSW
-PUSH B
-PUSH D
 PUSH H
-
-; Load values into registers from memory
-LHLD 9050H   ; Load divisor from memory location C050 to HL pair.
-PUSH H       ; Push divisor on the stack
-LHLD 9052H   ; Load dividend from memory location C052 to HL pair.
-PUSH H       ; Push dividend on the stack
-
-CALL DIVISION
-
-; Get the quotient into Register HL
-POP H
-
-; Store the quotient into memory
-SHLD 9054H
-
-; Get the remainder into Register HL
-POP H
-
-; Store the remainder into memory
-SHLD 9056H
-
-; Restore last state
-POP H
+PUSH D
+PUSH D
+PUSH B
+CALL REMAINDER
 POP D
 POP B
+POP H
 POP PSW
+JMP GCDLOOP
+STORERESULT: MOV H,B
+MOV L,C
+SHLD C094H
 
-
-STORERESULT: PUSH H
-LHLD C0A0H
-PUSH H
-RET
+REMAINDER: MVI H,00H
+; Get the return address and store in memory
+POP H
+SHLD C0A0H
+POP H       ; Pop dividend from stack to HL
+POP D       ; Pop divisor from stack to DE
+LXI B,0000H ; Set BC to 0
+REMAINDERLOOP: MVI A,00H
+MOV A,L     ; A <- L [copy the lower 8 bits ]
+SUB E       ; A = A - E [subtract the lower 8 bits ]
+MOV L,A     ; L <- A
+MOV A,H     ; A <- H [copy the higher 8 bits]
+SBB D       ; Subtract the higher 8 bits with borrow.
+MOV H,A     ; H <- A
+INX B       ; Increment B 
+JNC REMAINDERLOOP    ; If not carry (which occurs if the subtraction yielded a negative number) Jump to loop
+DCX B       ; Since we over-counted B, decrement B
+DAD D       ; Add DE to HL (makes it positive)
+PUSH H		; Push remainder on stack
+LHLD C0A0H  ; Read return address from memory
+PUSH H      ; Push return address on memory
+RET         ; Return
