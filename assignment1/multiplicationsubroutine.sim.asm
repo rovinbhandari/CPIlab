@@ -26,7 +26,7 @@ POP PSW
 
 HLT
 
-; 16-bit division.
+; 16-bit multiplication.
 ; number on the top of the stack goes to DE pair; the lower number goes to BC pair.
 ; returns the answer on the stack.
 ; TODO: add functionality to accomodate the overflowed bits (> 16 bits) in answer.
