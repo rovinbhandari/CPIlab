@@ -57,6 +57,7 @@ JMP GCDLOOP
 STORERESULT: MOV H,B
 MOV L,C
 SHLD C094H
+HLT
 
 REMAINDER: MVI H,00H
 ; Get the return address and store in memory
