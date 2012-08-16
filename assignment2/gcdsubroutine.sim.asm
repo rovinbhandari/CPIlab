@@ -54,15 +54,15 @@ POP B
 POP H
 POP PSW
 JMP GCDLOOP
-STORERESULT: MOV H,B
-MOV L,C
-SHLD C094H
-HLT
+STORERESULT: PUSH B
+LHLD C0A0H
+PUSH H
+RET
 
 REMAINDER: MVI H,00H
 ; Get the return address and store in memory
 POP H
-SHLD C0A0H
+SHLD C0A4H
 POP H       ; Pop dividend from stack to HL
 POP D       ; Pop divisor from stack to DE
 LXI B,0000H ; Set BC to 0
@@ -78,6 +78,6 @@ JNC REMAINDERLOOP    ; If not carry (which occurs if the subtraction yielded a n
 DCX B       ; Since we over-counted B, decrement B
 DAD D       ; Add DE to HL (makes it positive)
 PUSH H		; Push remainder on stack
-LHLD C0A0H  ; Read return address from memory
+LHLD C0A4H  ; Read return address from memory
 PUSH H      ; Push return address on memory
 RET         ; Return
